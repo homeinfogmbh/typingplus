@@ -51,10 +51,10 @@ def _resolve_type_hints(
 def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
     """Resolve type hints of a method resolution order."""
 
-    for parent in mro:
-        for attribute in parent.__dict__:
+    for cls in mro:
+        for attribute in cls.__dict__:
             try:
-                annotations = getattr(parent, attribute).__annotations__
+                annotations = getattr(cls, attribute).__annotations__
             except AttributeError:
                 continue
 
