@@ -1,0 +1,2 @@
+# typingplus
+Enhanced type hinting
