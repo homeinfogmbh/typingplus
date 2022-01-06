@@ -33,7 +33,7 @@ def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
     if isinstance(value, ForwardRef):
         return _resolve_type_hint(value.__forward_arg__, mapping)
 
-    if type(value) is _UnionGenericAlias:   # pylint: disable=C0123
+    if isinstance(value, _UnionGenericAlias):
         return _resolve_union_generic_alias(value, mapping)
 
     return value
