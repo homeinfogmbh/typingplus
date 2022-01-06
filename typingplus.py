@@ -20,8 +20,6 @@ def _resolve_union_generic_alias(
         tuple(_resolve_type_hint(a, mapping) for a in uga.__args__),
         inst=uga._inst,     # pylint: disable=W0212
         name=uga._name,     # pylint: disable=W0212
-        _typevar_types=uga._typevar_types,  # pylint: disable=W0212
-        _paramspec_tvars=uga._paramspec_tvars   # pylint: disable=W0212
     )
 
 
