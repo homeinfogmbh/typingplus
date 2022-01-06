@@ -48,11 +48,20 @@ def _resolve_type_hints(
         annotations[key] = _resolve_type_hint(value, mapping)
 
 
+def _get_attributes(cls: type) -> Iterable[str]:
+    """Returns the attribute names of the class."""
+
+    try:
+        return cls.__dict__
+    except AttributeError:
+        return cls.__slots__
+
+
 def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
     """Resolve type hints of a method resolution order."""
 
     for cls in mro:
-        for attribute in cls.__dict__:
+        for attribute in _get_attributes(cls):
             try:
                 annotations = getattr(cls, attribute).__annotations__
             except AttributeError:
