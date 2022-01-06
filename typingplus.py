@@ -10,7 +10,8 @@ __all__ = ['resolve_type_hints']
 
 
 def _resolve_union_generic_alias(
-        uga: _UnionGenericAlias, mapping: dict[str, Any]
+        uga: _UnionGenericAlias,
+        mapping: dict[str, Any]
     ) -> Any:
     """Resolve the type."""
 
