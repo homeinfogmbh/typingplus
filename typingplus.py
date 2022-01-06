@@ -4,9 +4,10 @@ from typing import _UnionGenericAlias
 from typing import Any
 from typing import ForwardRef
 from typing import Iterable
+from typing import Optional
 
 
-__all__ = ['resolve_type_hints']
+__all__ = ['resolve_type_hints', 'resolve_all_type_hints']
 
 
 def _resolve_union_generic_alias(
@@ -69,17 +70,34 @@ def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
             _resolve_type_hints(annotations, mapping)
 
 
-def resolve_type_hints(obj: type) -> type:
+def resolve_type_hints(
+        obj: Optional[type] = None, *,
+        mapping: Optional[dict[str, Any]] = None
+    ) -> type:
+    """Decorator to resolves type hints on classes and functions."""
+
+    if mapping is None:
+        mapping = globals()
+        mapping[obj.__name__] = obj
+
+    def decorator(obj) -> type:
+        try:
+            mro = obj.__mro__
+        except AttributeError:
+            _resolve_type_hints(obj.__annotations__, mapping)
+        else:
+            _resolve_mro(mro, mapping)
+
+        return obj
+
+    return decorator if obj is None else decorator(obj)
+
+
+def resolve_all_type_hints(*objects: type) -> None:
     """Decorator to resolves type hints on classes and functions."""
 
     mapping = globals()
-    mapping[obj.__name__] = obj
+    mapping.update({obj.__name__: obj for obj in objects})
 
-    try:
-        mro = obj.__mro__
-    except AttributeError:
-        _resolve_type_hints(obj.__annotations__, mapping)
-    else:
-        _resolve_mro(mro, mapping)
-
-    return obj
+    for obj in objects:
+        resolve_type_hints(obj, mapping=mapping)
