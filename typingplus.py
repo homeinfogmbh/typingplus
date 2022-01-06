@@ -62,7 +62,7 @@ def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
 
 
 def resolve_type_hints(obj: type) -> type:
-    """Resolves type hints."""
+    """Resolves type hints on classes and functions."""
 
     mapping = globals()
     mapping[obj.__name__] = obj
