@@ -11,20 +11,6 @@ from typing import Optional
 __all__ = ['resolve_type_hints', 'resolve_all_type_hints']
 
 
-def _resolve_union_generic_alias(
-        uga: _UnionGenericAlias,
-        mapping: dict[str, Any]
-    ) -> Any:
-    """Resolve the type."""
-
-    return _UnionGenericAlias(
-        uga.__origin__,
-        tuple(_resolve_type_hint(a, mapping) for a in uga.__args__),
-        inst=uga._inst,     # pylint: disable=W0212
-        name=uga._name,     # pylint: disable=W0212
-    )
-
-
 def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
     """Resolves a type hint."""
 
@@ -35,7 +21,12 @@ def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
         return _resolve_type_hint(value.__forward_arg__, mapping)
 
     if isinstance(value, _UnionGenericAlias):
-        return _resolve_union_generic_alias(value, mapping)
+        return _UnionGenericAlias(
+            value.__origin__,
+            tuple(_resolve_type_hint(a, mapping) for a in value.__args__),
+            inst=value._inst,   # pylint: disable=W0212
+            name=value._name,   # pylint: disable=W0212
+        )
 
     return value
 
