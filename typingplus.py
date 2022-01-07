@@ -57,17 +57,23 @@ def _get_attributes(cls: type) -> Iterable[str]:
         return cls.__slots__
 
 
+def _resolve_class(cls: type, mapping: dict[str, Any]) -> None:
+    """Resolves type hints of a class."""
+
+    for attribute in _get_attributes(cls):
+        try:
+            annotations = getattr(cls, attribute).__annotations__
+        except AttributeError:
+            continue
+
+        _resolve_type_hints(annotations, mapping)
+
+
 def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
     """Resolve type hints of a method resolution order."""
 
     for cls in mro:
-        for attribute in _get_attributes(cls):
-            try:
-                annotations = getattr(cls, attribute).__annotations__
-            except AttributeError:
-                continue
-
-            _resolve_type_hints(annotations, mapping)
+        _resolve_class(cls, mapping)
 
 
 def resolve_type_hints(
