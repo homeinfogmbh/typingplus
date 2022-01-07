@@ -3,9 +3,11 @@
 from contextlib import suppress
 from typing import _UnionGenericAlias
 from typing import Any
+from typing import Callable
 from typing import ForwardRef
 from typing import Iterable
 from typing import Optional
+from typing import Union
 
 
 __all__ = ['resolve_type_hints', 'resolve_all_type_hints']
@@ -73,14 +75,14 @@ def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
 def resolve_type_hints(
         obj: Optional[type] = None, *,
         mapping: Optional[dict[str, Any]] = None
-    ) -> type:
+    ) -> Union[Callable[[Any, type]], type]:
     """Decorator to resolves type hints on classes and functions."""
 
     if mapping is None:
         mapping = globals()
         mapping[obj.__name__] = obj
 
-    def decorator(obj) -> type:
+    def decorator(obj: Any) -> type:
         try:
             mro = obj.__mro__
         except AttributeError:
