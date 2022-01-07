@@ -1,5 +1,6 @@
 """Enhanced type hinting hacks."""
 
+from contextlib import suppress
 from typing import _UnionGenericAlias
 from typing import Any
 from typing import ForwardRef
@@ -57,16 +58,18 @@ def _get_attributes(cls: type) -> Iterable[str]:
         return cls.__slots__
 
 
+def _resolve_object(obj: Any, mapping: dict[str, Any]) -> None:
+    """Resolves the type hints of the given attribute."""
+
+    with suppress(AttributeError):
+        _resolve_type_hints(obj.__annotations__, mapping)
+
+
 def _resolve_class(cls: type, mapping: dict[str, Any]) -> None:
     """Resolves type hints of a class."""
 
     for attribute in _get_attributes(cls):
-        try:
-            annotations = getattr(cls, attribute).__annotations__
-        except AttributeError:
-            continue
-
-        _resolve_type_hints(annotations, mapping)
+        _resolve_object(getattr(cls, attribute), mapping)
 
 
 def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
