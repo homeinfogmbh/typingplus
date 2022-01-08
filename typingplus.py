@@ -23,11 +23,8 @@ def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
         return _resolve_type_hint(value.__forward_arg__, mapping)
 
     if isinstance(value, _UnionGenericAlias):
-        return _UnionGenericAlias(
-            value.__origin__,
-            tuple(_resolve_type_hint(a, mapping) for a in value.__args__),
-            inst=value._inst,   # pylint: disable=W0212
-            name=value._name,   # pylint: disable=W0212
+        value.__args__ = tuple(
+            _resolve_type_hint(a, mapping) for a in value.__args__
         )
 
     return value
