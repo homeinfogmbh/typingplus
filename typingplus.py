@@ -24,7 +24,7 @@ def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
 
     if isinstance(value, _UnionGenericAlias):
         value.__args__ = tuple(
-            _resolve_type_hint(a, mapping) for a in value.__args__
+            _resolve_type_hint(arg, mapping) for arg in value.__args__
         )
 
     return value
