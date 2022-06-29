@@ -32,7 +32,7 @@ def _resolve_type_hint(value: Any, mapping: dict[str, Any]) -> Any:
 
 def _resolve_type_hints(
         annotations: dict[str, Any], mapping: dict[str, Any]
-        ) -> None:
+) -> None:
     """Resolve type hints of the given annotations' dict."""
 
     for key, value in dict(annotations).items():
@@ -72,7 +72,7 @@ def _resolve_mro(mro: Iterable[type], mapping: dict[str, Any]) -> None:
 def resolve_type_hints(
         obj: Optional[type] = None, *,
         mapping: Optional[dict[str, Any]] = None
-        ) -> Union[Callable[[Any], type], type]:
+) -> Union[Callable[[Any], type], type]:
     """Decorator to resolve type hints on classes and functions."""
 
     if mapping is None:
